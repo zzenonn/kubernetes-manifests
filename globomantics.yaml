@@ -1,0 +1,54 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-globomantics
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: app-globomantics
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: app-globomantics
+    spec:
+      containers:
+      - image: zzenonn/globomantics:v1.0.0
+        imagePullPolicy: Always
+        name: app-globomantics
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-globomantics
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: app-globomantics
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-globomantics
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  rules:
+    - http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: service-globomantics
+              port:
+                number: 80

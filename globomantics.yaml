@@ -14,7 +14,7 @@ spec:
         app.kubernetes.io/name: app-globomantics
     spec:
       containers:
-      - image: zzenonn/globomantics:v1.0.0
+      - image: <imageUri>:latest
         imagePullPolicy: Always
         name: app-globomantics
         ports:
